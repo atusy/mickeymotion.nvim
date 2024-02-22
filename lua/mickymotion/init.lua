@@ -25,10 +25,13 @@ local function f(range)
 			if not sc then
 				break
 			end
+
+			-- TODO: take into account of 'wrap' based on width and textoff of getwininfo()
 			local delta = col - n_consumed - sc
 			if (delta >= 0 and delta <= range[2]) or (delta < 0 and -delta <= range[4]) then
 				table.insert(heads[i], n_consumed + sc - 1)
 			end
+
 			s_consumed = s_consumed .. string.sub(line, 1, ec)
 			n_consumed = n_consumed + ec
 			line = string.sub(line, ec + 1)
@@ -60,6 +63,8 @@ local function f(range)
 	end
 
 	vim.cmd.redraw()
+	-- TODO: consider timeout
+	-- TODO: consider pass through <LeftMouse>
 	local ok, charstr = pcall(vim.fn.getcharstr)
 	vim.api.nvim_buf_clear_namespace(bufnr, ns, 1, -1)
 	if not ok then
@@ -73,4 +78,5 @@ local function f(range)
 	end
 end
 
+-- TODO: <MouseMove> cannot detect mouse stopped position
 vim.keymap.set("n", "<MouseMove><Space>", f)
